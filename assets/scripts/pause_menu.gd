@@ -8,8 +8,10 @@ func _ready():
 	set_process_input( true );
 
 func _input( event ):
-	if event.type == InputEvent.KEY:
-		if event.pressed and event.scancode == KEY_ESCAPE and paused == false:
+	if event.type == InputEvent.KEY and event.pressed and event.scancode == KEY_ESCAPE:
+		if paused == true: 
+			resume_game()
+		if paused == false:
 			paused = true
 			Input.set_mouse_mode( Input.MOUSE_MODE_VISIBLE )
 			get_tree().set_pause( true )

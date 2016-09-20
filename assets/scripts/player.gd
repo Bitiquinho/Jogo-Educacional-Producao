@@ -32,8 +32,9 @@ func _input( event ):
 func _fixed_process( delta ):
 	var selector = get_node( "body/camera/selector" )
 	if selector.is_colliding():
-		current_stage = selector.get_collider().get_parent()
+		current_stage = selector.get_collider().get_parent().get_parent()
 		current_stage.activate()
+		#print( "colliding with " + current_stage.get_name() )
 		if selecting_stage:
 			print( "selecting " + current_stage.get_name() )
 			current_stage.select()

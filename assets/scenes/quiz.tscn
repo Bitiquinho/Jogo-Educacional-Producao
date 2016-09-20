@@ -37,40 +37,25 @@ custom_fonts/font = SubResource( 1 )
 text = "Questão 1\n\nConteúdo da Questão\n\nQual a resposta \?"
 align = 1
 valign = 1
+autowrap = true
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="answer_2" type="Button" parent="."]
+[node name="buttons" type="HButtonArray" parent="."]
 
 focus/ignore_mouse = false
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 2
-margin/left = 400.0
-margin/top = 420.0
-margin/right = 500.0
-margin/bottom = 460.0
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-text = "Resposta 2"
-flat = false
+margin/left = 75.0
+margin/top = 415.0
+margin/right = 525.0
+margin/bottom = 465.0
+button/count = 0
+button/min_button_size = 50.0
+button/align = 4
 
-[node name="answer_1" type="Button" parent="."]
-
-focus/ignore_mouse = false
-focus/stop_mouse = true
-size_flags/horizontal = 2
-size_flags/vertical = 2
-margin/left = 100.0
-margin/top = 420.0
-margin/right = 200.0
-margin/bottom = 460.0
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-text = "Resposta 1"
-flat = false
+[connection signal="button_selected" from="buttons" to="." method="_on_buttons_button_selected"]
 
 

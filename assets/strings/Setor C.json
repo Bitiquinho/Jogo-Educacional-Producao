@@ -1,0 +1,25 @@
+{
+  "paginas":[
+    {
+      "tipo": "info",
+      "texto": "Folha de Verificação e Curva de Pareto."
+    },
+    {
+      "tipo": "questao X",
+      "imagem": "",
+      "texto": "Escolha a opção correta:",
+      "alternativas": [
+        "Primeira alternativa",
+        "Segunda alternativa",
+        "Terceira alternativa"
+      ],
+      "resposta": 2
+    },
+    {
+      "tipo": "questao VF",
+      "imagem": "",
+      "texto": "Marque como verdadeiro ou falsa",
+      "resposta": true
+    }
+  ]
+} 
