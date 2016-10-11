@@ -24,11 +24,9 @@ public:
     ~PSQLDatabase();
     
     void ConnectServer( String, String, String, String );
-    void CreateTable( String, String );
-    Array LoadTable( String );
-    void DeleteTable( String );
     Array Select( String, String, String );
     void Insert( String, String, String );
+    void Update( String, String, String, String );
     
 private:
     pqxx::connection* connection;

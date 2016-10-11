@@ -2,11 +2,12 @@
 
 #include "postgresql.h"
 
-#include "image.h"
-#include "drivers/png/image_loader_png.h"
+#include "variant.h"
 
 #include <string>
 #include <exception>
+
+#include <fstream>
 
 PSQLDatabase::PSQLDatabase() 
 {
@@ -45,64 +46,17 @@ void PSQLDatabase::ConnectServer( String serverHost, String databaseName, String
     }
 }
 
-void PSQLDatabase::CreateTable( String tableName, String fields ) 
-{
-    std::string workString = "CREATE TABLE ";
-    workString += tableName.utf8().get_data();
-    workString += " (";
-    workString += fields.utf8().get_data();
-    workString += ");";
-  
-    if( connection )
-    {          
-        try
-        {
-            pqxx::work transaction( *connection );
-            transaction.exec( workString );
-        }
-        catch( std::exception& exception )
-        {
-            print_line( String::utf8( exception.what() ) );
-        }
-    }
-}
-
-Array PSQLDatabase::LoadTable( String tableName ) 
-{    
-    return Select( tableName, "*", "" );
-}
-
-void PSQLDatabase::DeleteTable( String tableName )
-{
-    std::string workString = "DROP TABLE ";
-    workString += tableName.utf8().get_data();
-  
-    if( connection )
-    {
-        try
-        {
-            pqxx::work transaction( *connection );
-            transaction.exec( workString );
-        }
-        catch( std::exception& exception )
-        {
-            print_line( String::utf8( exception.what() ) );
-        }
-    }
-}
-
 Array PSQLDatabase::Select( String tableName, String fieldNames, String condition )
-{
+{ 
     std::string queryString = "SELECT ";
     queryString += fieldNames.utf8().get_data();
     queryString += " FROM ";
     queryString += tableName.utf8().get_data();
-    if( not condition.empty() )
-    {
-        queryString += " WHERE ";
-        queryString += condition.utf8().get_data();
-    }
+    queryString += " ";
+    queryString += condition.utf8().get_data();
     queryString += ";";
+    
+    print_line( String::utf8( queryString.c_str() ) );
     
     Array rowsList;
     
@@ -120,10 +74,17 @@ Array PSQLDatabase::Select( String tableName, String fieldNames, String conditio
                   if( IsBinary( resultField ) )
                   {
                       pqxx::binarystring blob( resultField );
-                      const void* data = blob.data();
-                      //size_t dataSize = blob.size();
-                      ImageLoaderPNG();
-                      row[ resultField.name() ] = Image( (const uint8_t*) data );
+                      const uint8_t* dataBuffer = (const uint8_t*) blob.data();
+                      size_t dataSize = blob.size();
+                      if( dataSize > 0 )
+                      {
+                          ByteArray dataArray;
+                          dataArray.resize( dataSize );
+                          ByteArray::Write dataArrayWriter = dataArray.write();
+                          for( size_t byteIndex = 0; byteIndex < dataSize; byteIndex++ )
+                              dataArrayWriter[ byteIndex ] = dataBuffer[ byteIndex ];
+                          row[ resultField.name() ] = dataArray;
+                      }
                   }
                   else if( IsBoolean( resultField ) )
                       row[ resultField.name() ] = resultField.as<int>();
@@ -149,20 +110,46 @@ Array PSQLDatabase::Select( String tableName, String fieldNames, String conditio
 
 void PSQLDatabase::Insert( String tableName, String fieldNames, String values )
 {
-    std::string workString = "INSERT INTO ";
-    workString += tableName.utf8().get_data();
-    workString += "(";
-    workString += fieldNames.utf8().get_data(); 
-    workString += ") VALUES (";
-    workString += values.utf8().get_data();
-    workString += ");";
+    std::string queryString = "INSERT INTO ";
+    queryString += tableName.utf8().get_data();
+    queryString += "(";
+    queryString += fieldNames.utf8().get_data(); 
+    queryString += ") VALUES (";
+    queryString += values.utf8().get_data();
+    queryString += ");";
   
     if( connection )
     {
         try
         {
             pqxx::work transaction( *connection );
-            transaction.exec( workString );
+            transaction.exec( queryString );
+        }
+        catch( std::exception& exception )
+        {
+            print_line( String::utf8( exception.what() ) );
+        }
+    }
+}
+
+void PSQLDatabase::Update( String tableName, String fieldName, String value, String condition )
+{
+    std::string queryString = "UPDATE ";
+    queryString += tableName.utf8().get_data();
+    queryString += " SET ";
+    queryString += fieldName.utf8().get_data(); 
+    queryString += "=(";
+    queryString += value.utf8().get_data(); 
+    queryString += ") ";
+    queryString += condition.utf8().get_data();
+    queryString += ";";
+  
+    if( connection )
+    {
+        try
+        {
+            pqxx::work transaction( *connection );
+            transaction.exec( queryString );
         }
         catch( std::exception& exception )
         {
@@ -173,12 +160,10 @@ void PSQLDatabase::Insert( String tableName, String fieldNames, String values )
 
 void PSQLDatabase::_bind_methods() 
 {
-    ObjectTypeDB::bind_method( "connect_server", &PSQLDatabase::ConnectServer );
-    ObjectTypeDB::bind_method( "create_table", &PSQLDatabase::CreateTable );
-    ObjectTypeDB::bind_method( "load_table", &PSQLDatabase::LoadTable );
-    ObjectTypeDB::bind_method( "delete_table", &PSQLDatabase::DeleteTable );
-    ObjectTypeDB::bind_method( "select", &PSQLDatabase::Select );
-    ObjectTypeDB::bind_method( "insert", &PSQLDatabase::Insert );
+    ObjectTypeDB::bind_method( _MD( "connect_server", "host", "database", "user", "password" ), &PSQLDatabase::ConnectServer );
+    ObjectTypeDB::bind_method( _MD( "select", "table_name", "field_names", "condition" ), &PSQLDatabase::Select, DEFVAL( "" ), DEFVAL( "*" ) );
+    ObjectTypeDB::bind_method( _MD( "insert", "table_name", "field_names", "values" ), &PSQLDatabase::Insert );
+    ObjectTypeDB::bind_method( _MD( "update", "table_name", "field_name", "value", "condition" ), &PSQLDatabase::Update, DEFVAL( "" ) );
 }
 
 
