@@ -1,8 +1,6 @@
 extends Panel
 
 func _ready():
-	get_node( "login_entry" ).connect( "text_entered", self, "record_name" )
-	get_node( "start_button" ).connect( "pressed", self, "start_game" )
 	Input.set_mouse_mode( Input.MOUSE_MODE_VISIBLE )
 	get_tree().set_pause( true )
 
@@ -17,3 +15,9 @@ func start_game():
 	get_tree().set_pause( false )
 	Input.set_mouse_mode( Input.MOUSE_MODE_CAPTURED )
 	hide()
+
+func _on_login_entry_text_entered( text ):
+	record_name( text )
+
+func _on_start_button_pressed():
+	start_game()

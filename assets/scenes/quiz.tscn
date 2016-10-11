@@ -64,11 +64,11 @@ max_lines_visible = -1
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
-size_flags/horizontal = 3
+size_flags/horizontal = 1
 size_flags/vertical = 3
-margin/left = 0.0
+margin/left = 260.0
 margin/top = 192.0
-margin/right = 520.0
+margin/right = 260.0
 margin/bottom = 380.0
 stretch_mode = 0
 
@@ -104,5 +104,7 @@ text = "Próxima"
 flat = false
 
 [connection signal="button_selected" from="option_buttons" to="." method="_on_buttons_button_selected"]
+
+[connection signal="pressed" from="next_button" to="." method="_on_next_button_pressed"]
 
 

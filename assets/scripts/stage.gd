@@ -9,7 +9,6 @@ func _ready():
 
 func activate():
 	active = true
-	print( "activating " + get_name() )
 
 func deactivate():
 	active = true
