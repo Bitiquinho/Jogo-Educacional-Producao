@@ -34,7 +34,8 @@ func load_data( data_id ):
 	pages_list.clear()
 	var database = PSQLDatabase.new()
 	database.connect_server( "localhost", "gamedb", "postgres", "postgres" )
-	pages_list = database.select( "public.pages", "id,text,options,image", "type = '" + data_id + "' ORDER BY id" )
+	pages_list = database.select( "public.pages", "id,text,options,image", \
+	                              "WHERE type = '" + data_id + "' ORDER BY id" )
 	print( pages_list )
 	var image_file = File.new()
 	for page_idx in range( pages_list.size() ):
