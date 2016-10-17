@@ -2,6 +2,9 @@
 
 #include "postgresql.h"
 
+#include "pqxx/transaction.hxx"
+#include "pqxx/binarystring.hxx"
+
 #include "variant.h"
 
 #include <string>
@@ -69,7 +72,7 @@ Array PSQLDatabase::Select( String tableName, String fieldNames, String conditio
           for( pqxx::result::const_iterator resultLine = result.begin(); resultLine != result.end(); ++resultLine )
           {
               Dictionary row;
-              for( pqxx::tuple::const_iterator resultField : resultLine )
+              for( auto resultField : resultLine )
               {
                   if( IsBinary( resultField ) )
                   {
@@ -167,22 +170,22 @@ void PSQLDatabase::_bind_methods()
 }
 
 
-bool PSQLDatabase::IsBoolean( pqxx::result::field& field )
+bool PSQLDatabase::IsBoolean( pqxx::field& field )
 {
     return ( field.type() == 16 );
 }
 
-bool PSQLDatabase::IsInteger( pqxx::result::field& field )
+bool PSQLDatabase::IsInteger( pqxx::field& field )
 {
     return ( field.type() >= 20 and field.type() <= 23 );
 }
 
-bool PSQLDatabase::IsFloat( pqxx::result::field& field )
+bool PSQLDatabase::IsFloat( pqxx::field& field )
 {
     return ( field.type() == 700 or field.type() == 701 );
 }
 
-bool PSQLDatabase::IsBinary( pqxx::result::field& field )
+bool PSQLDatabase::IsBinary( pqxx::field& field )
 {
     return ( field.type() == 17 );
 }

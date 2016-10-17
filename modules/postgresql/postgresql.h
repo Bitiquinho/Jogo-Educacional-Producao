@@ -9,7 +9,11 @@
 #include "list.h"
 #include "map.h"
 
-#include <pqxx/pqxx>
+#include "pqxx/util.hxx"
+
+#include "pqxx/connection.hxx"
+#include "pqxx/result.hxx"
+#include "pqxx/field.hxx"
 
 
 class PSQLDatabase : public Reference 
@@ -31,12 +35,12 @@ public:
 private:
     pqxx::connection* connection;
     
-    bool IsBoolean( pqxx::result::field& );
-    bool IsChar( pqxx::result::field& );
-    bool IsInteger( pqxx::result::field& );
-    bool IsFloat( pqxx::result::field& );
-    bool IsString( pqxx::result::field& );
-    bool IsBinary( pqxx::result::field& );
+    bool IsBoolean( pqxx::field& );
+    bool IsChar( pqxx::field& );
+    bool IsInteger( pqxx::field& );
+    bool IsFloat( pqxx::field& );
+    bool IsString( pqxx::field& );
+    bool IsBinary( pqxx::field& );
 };
 
 #endif 

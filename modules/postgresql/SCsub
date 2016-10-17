@@ -5,3 +5,5 @@ module_env = env.Clone()
 module_env.add_source_files(env.modules_sources,"*.cpp")
 module_env.Append(CXXFLAGS=['-O2', '-std=c++11']) 
 env.Append(LIBS=['pqxx', 'pq'])
+
+Export('env')
