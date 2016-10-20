@@ -8,30 +8,37 @@ var pages_list = []
 const MAX_PAGES_NUMBER = 5
 var current_pages_count = 0
 
+var score = 0
 var right_option = -1
 
-func _input( event ):
-	if event.type == InputEvent.KEY:
-		if event.pressed and event.scancode == KEY_BACKSPACE:
-			finish()
+#func _input( event ):
+#	if event.type == InputEvent.KEY:
+#		if event.pressed and event.scancode == KEY_BACKSPACE:
+#			finish()
 
 func start():
 	Input.set_mouse_mode( Input.MOUSE_MODE_VISIBLE )
 	get_tree().set_pause( true )
 	show()
 	set_process_input( true )
-	current_pages_count = 0
 	randomize()
+	score = Globals.get( "score" )
 	next_page()
 
 func finish():
+	Globals.set( "score", score )
 	hide()
 	get_tree().set_pause( false )
 	Input.set_mouse_mode( Input.MOUSE_MODE_CAPTURED )
 	set_process_input( false )
 
-func load_data( data_id ):
+func load_done_screen():
 	pages_list.clear()
+	pages_list.append( {} )
+	pages_list[ 0 ][ "text" ] = "Você já respondeu esse questionário"
+	current_pages_count = 0
+
+func load_data( data_id ):
 	var database = PSQLDatabase.new()
 	database.connect_server( "localhost", "gamedb", "postgres", "postgres" )
 	pages_list = database.select( "public.pages", "id,text,options,image", \
@@ -53,26 +60,30 @@ func load_data( data_id ):
 func next_page():
 	current_pages_count += 1
 	var pages_number = min( pages_list.size(), MAX_PAGES_NUMBER )
-	if current_pages_count > pages_number: 
+	if current_pages_count > MAX_PAGES_NUMBER or pages_list.empty(): 
+		load_done_screen()
 		finish()
 		return
-	var page_idx = current_pages_count - 1
+	var page_idx = randi() % pages_list.size()
 	var page = pages_list[ page_idx ]
 	print( page )
-	content_text.set_text( page[ "text" ] )
-	content_image.set_texture( page[ "image" ] )
 	option_buttons.clear()
 	right_option = -1
+	content_text.set_text( page[ "text" ] )
+	content_image.set_texture( page[ "image" ] )
 	var option_entries = page[ "options" ].split( ",", false )
 	for entry_idx in range( option_entries.size() ):
 		var entry = option_entries[ entry_idx ]
 		if entry.find( "*" ) == 0: 
-		  right_option= entry_idx
-		  entry = entry.substr( 1, entry.length() - 1 )
+			right_option= entry_idx
+			entry = entry.substr( 1, entry.length() - 1 )
 		option_buttons.add_button( entry )
+	pages_list.remove( page_idx )
 
 func _on_buttons_button_selected( button_idx ):
 	print( "selected button " + str( button_idx ) + ": " + str( button_idx == right_option ) )
+	if button_idx == right_option: score += 1
+	print( "total score: " + str(score) )
 
 func _on_next_button_pressed():
 	print( "next page" )

@@ -3,8 +3,6 @@ extends Panel
 var paused = false
 
 func _ready():
-	get_node( "return_button" ).connect( "pressed", self, "resume_game" )
-	get_node( "exit_button" ).connect( "pressed", self, "quit_game" )
 	set_process_input( true );
 
 func _input( event ):
@@ -25,3 +23,9 @@ func resume_game():
 
 func quit_game():
 	get_tree().call_deferred( "quit" )
+
+func _on_return_button_pressed():
+	resume_game()
+
+func _on_exit_button_pressed():
+	quit_game()

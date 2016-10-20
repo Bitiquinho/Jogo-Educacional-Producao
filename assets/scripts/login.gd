@@ -6,6 +6,7 @@ var server_host = "localhost"
 var player_name = null
 
 func _ready():
+	Globals.set( "score", 0 )
 	if Globals.has( "server_host" ): server_host = Globals.get( "server_host" )
 	server_entry.set_text( server_host )
 	Input.set_mouse_mode( Input.MOUSE_MODE_VISIBLE )

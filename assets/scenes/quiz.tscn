@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=1]
 
-[ext_resource path="res://assets/scripts/quiz.gd" type="Script" id=1]
+[ext_resource path="res://assets/scripts/pages.gd" type="Script" id=1]
 [ext_resource path="res://assets/fonts/COMIC.TTF" type="DynamicFontData" id=2]
 
 [sub_resource type="DynamicFont" id=1]
@@ -33,13 +33,13 @@ script/script = ExtResource( 1 )
 
 focus/ignore_mouse = false
 focus/stop_mouse = true
-size_flags/horizontal = 2
-size_flags/vertical = 2
+size_flags/horizontal = 3
+size_flags/vertical = 3
 margin/left = 40.0
 margin/top = 30.0
 margin/right = 560.0
 margin/bottom = 410.0
-alignment = 1
+alignment = 0
 
 [node name="text" type="Label" parent="content"]
 
@@ -50,7 +50,7 @@ size_flags/vertical = 3
 margin/left = 0.0
 margin/top = 0.0
 margin/right = 520.0
-margin/bottom = 188.0
+margin/bottom = 376.0
 custom_fonts/font = SubResource( 1 )
 text = "Questão 1\nConteúdo da Questão\nQual a resposta \?"
 align = 1
@@ -64,13 +64,13 @@ max_lines_visible = -1
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
-size_flags/horizontal = 1
-size_flags/vertical = 3
-margin/left = 260.0
-margin/top = 192.0
-margin/right = 260.0
+size_flags/horizontal = 3
+size_flags/vertical = 2
+margin/left = 0.0
+margin/top = 380.0
+margin/right = 520.0
 margin/bottom = 380.0
-stretch_mode = 0
+stretch_mode = 6
 
 [node name="option_buttons" type="HButtonArray" parent="."]
 
@@ -92,9 +92,9 @@ focus/ignore_mouse = false
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 2
-margin/left = 450.0
+margin/left = 430.0
 margin/top = 440.0
-margin/right = 570.0
+margin/right = 550.0
 margin/bottom = 480.0
 custom_fonts/font = SubResource( 2 )
 toggle_mode = false
