@@ -1,9 +1,14 @@
-# SCsub
-Import('env')
+#!/usr/bin/env python
 
-module_env = env.Clone()
-module_env.add_source_files(env.modules_sources,"*.cpp")
-module_env.Append(CXXFLAGS=['-O2', '-std=c++11']) 
-env.Append(LIBS=['pqxx', 'pq'])
+Import('env')
+Import('env_modules')
+
+env_postgresql = env_modules.Clone()
+
+env_postgresql.add_source_files(env.modules_sources,"*.cpp")
+env_postgresql.Append(CXXFLAGS=['/O2' '/std:c++11'])
+env_postgresql.Append(LIBS=['pqxx', 'pq'], LIBPATH=['#thirdparty/libpqxx'], CPPPATH=['#thirdparty/libpqxx'])
+
+env.Append(LIBPATH=['#thirdparty/libpqxx'], LINKFLAGS=['libpqxx.lib', 'libpq.lib'], )
 
 Export('env')

@@ -28,6 +28,6 @@ func deactivate():
 		var total_score = Globals.get( "score" )
 		total_score += Globals.get( "score_" + get_name() )
 		Globals.set( "score", total_score )
-		var complete_stages = Globals.get( "complete_stages" )
-		Globals.set( "complete_stages", complete_stages + 1 )
+		var completed_stages = Globals.get( "completed_stages" )
+		Globals.set( "completed_stages", completed_stages + 1 )
 		answered = true

@@ -46,10 +46,12 @@ func finish():
 	hide_panel()
 
 func load_data( data_id ):
+	var server_host = "127.0.0.1"
+	if Globals.has( "server_host" ): server_host = Globals.get( "server_host" )
 	var database = PSQLDatabase.new()
-	database.connect_server( "localhost", "gamedb", "postgres", "postgres" )
+	database.connect_server( server_host, "gamedb", "postgres", "postgres" )
 	loaded_pages_list = database.select( "public.pages", "id,text,options,image", \
-	                                     "WHERE type = '" + data_id + "' ORDER BY id" )
+	                                     "WHERE type='" + data_id + "' ORDER BY id" )
 	print( loaded_pages_list )
 	var image_file = File.new()
 	for page_idx in range( loaded_pages_list.size() ):
@@ -88,9 +90,9 @@ func next_page():
 
 func _on_buttons_button_selected( button_idx ):
 	print( "selected button " + str( button_idx ) + ": " + str( button_idx == right_option ) )
-	if button_idx == right_option: score += 1
-	print( "total score: " + str(score) )
 
 func _on_next_button_pressed():
-	print( "next page" )
+	if option_buttons.get_button_count() > 0:
+		if option_buttons.get_selected() == right_option: score += 1
+		print( "total score: " + str(score) )
 	next_page()

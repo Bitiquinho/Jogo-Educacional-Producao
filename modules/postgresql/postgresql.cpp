@@ -2,6 +2,7 @@
 
 #include "postgresql.h"
 
+#include "pqxx/nontransaction.hxx"
 #include "pqxx/transaction.hxx"
 #include "pqxx/binarystring.hxx"
 
@@ -12,7 +13,7 @@
 
 #include <fstream>
 
-PSQLDatabase::PSQLDatabase() 
+PSQLDatabase::PSQLDatabase()
 {
     connection = nullptr;
 }
@@ -22,15 +23,15 @@ PSQLDatabase::~PSQLDatabase()
     if( connection )
     {
         connection->disconnect();
-  
+
         delete connection;
     }
 }
 
-void PSQLDatabase::ConnectServer( String serverHost, String databaseName, String userName, String password ) 
+void PSQLDatabase::ConnectServer( String serverHost, String databaseName, String userName, String password )
 {
     std::string optionsString;
-    optionsString += "host=";
+    optionsString += "hostaddr=";
     optionsString += serverHost.utf8().get_data();
     optionsString += " dbname=";
     optionsString += databaseName.utf8().get_data();
@@ -38,7 +39,7 @@ void PSQLDatabase::ConnectServer( String serverHost, String databaseName, String
     optionsString += userName.utf8().get_data();
     optionsString += " password=";
     optionsString += password.utf8().get_data();
-    
+
     try
     {
         connection = new pqxx::connection( optionsString );
@@ -50,7 +51,7 @@ void PSQLDatabase::ConnectServer( String serverHost, String databaseName, String
 }
 
 Array PSQLDatabase::Select( String tableName, String fieldNames, String condition )
-{ 
+{
     std::string queryString = "SELECT ";
     queryString += fieldNames.utf8().get_data();
     queryString += " FROM ";
@@ -58,18 +59,18 @@ Array PSQLDatabase::Select( String tableName, String fieldNames, String conditio
     queryString += " ";
     queryString += condition.utf8().get_data();
     queryString += ";";
-    
+
     print_line( String::utf8( queryString.c_str() ) );
-    
+
     Array rowsList;
-    
+
     if( connection )
     {
         try
         {
-          pqxx::work transaction( *connection );
-          pqxx::result result = transaction.exec( queryString );
-          for( pqxx::result::const_iterator resultLine = result.begin(); resultLine != result.end(); ++resultLine )
+          pqxx::nontransaction query( *connection );
+          pqxx::result result = query.exec( queryString );
+          for( auto resultLine = result.begin(); resultLine != result.end(); ++resultLine )
           {
               Dictionary row;
               for( auto resultField : resultLine )
@@ -98,7 +99,7 @@ Array PSQLDatabase::Select( String tableName, String fieldNames, String conditio
                   else
                       row[ resultField.name() ] = String::utf8( (char*) resultField.c_str() );
               }
-              
+
               rowsList.push_back( row );
           }
         }
@@ -107,7 +108,7 @@ Array PSQLDatabase::Select( String tableName, String fieldNames, String conditio
             print_line( String::utf8( exception.what() ) );
         }
     }
-    
+
     return rowsList;
 }
 
@@ -116,17 +117,20 @@ void PSQLDatabase::Insert( String tableName, String fieldNames, String values )
     std::string queryString = "INSERT INTO ";
     queryString += tableName.utf8().get_data();
     queryString += "(";
-    queryString += fieldNames.utf8().get_data(); 
+    queryString += fieldNames.utf8().get_data();
     queryString += ") VALUES (";
     queryString += values.utf8().get_data();
     queryString += ");";
-  
+
+    print_line( String::utf8( queryString.data() ) );
+
     if( connection )
     {
         try
         {
-            pqxx::work transaction( *connection );
-            transaction.exec( queryString );
+            pqxx::work query( *connection );
+            query.exec( queryString );
+            query.commit();
         }
         catch( std::exception& exception )
         {
@@ -140,19 +144,22 @@ void PSQLDatabase::Update( String tableName, String fieldName, String value, Str
     std::string queryString = "UPDATE ";
     queryString += tableName.utf8().get_data();
     queryString += " SET ";
-    queryString += fieldName.utf8().get_data(); 
+    queryString += fieldName.utf8().get_data();
     queryString += "=(";
-    queryString += value.utf8().get_data(); 
+    queryString += value.utf8().get_data();
     queryString += ") ";
     queryString += condition.utf8().get_data();
     queryString += ";";
-  
+
+    print_line( String::utf8( queryString.data() ) );
+
     if( connection )
     {
         try
         {
-            pqxx::work transaction( *connection );
-            transaction.exec( queryString );
+            pqxx::work query( *connection );
+            query.exec( queryString );
+            query.commit();
         }
         catch( std::exception& exception )
         {
@@ -161,10 +168,10 @@ void PSQLDatabase::Update( String tableName, String fieldName, String value, Str
     }
 }
 
-void PSQLDatabase::_bind_methods() 
+void PSQLDatabase::_bind_methods()
 {
     ObjectTypeDB::bind_method( _MD( "connect_server", "host", "database", "user", "password" ), &PSQLDatabase::ConnectServer );
-    ObjectTypeDB::bind_method( _MD( "select", "table_name", "field_names", "condition" ), &PSQLDatabase::Select, DEFVAL( "" ), DEFVAL( "*" ) );
+    ObjectTypeDB::bind_method( _MD( "select", "table_name", "field_names", "condition" ), &PSQLDatabase::Select, DEFVAL( "*" ), DEFVAL( "" ) );
     ObjectTypeDB::bind_method( _MD( "insert", "table_name", "field_names", "values" ), &PSQLDatabase::Insert );
     ObjectTypeDB::bind_method( _MD( "update", "table_name", "field_name", "value", "condition" ), &PSQLDatabase::Update, DEFVAL( "" ) );
 }
@@ -177,12 +184,12 @@ bool PSQLDatabase::IsBoolean( pqxx::field& field )
 
 bool PSQLDatabase::IsInteger( pqxx::field& field )
 {
-    return ( field.type() >= 20 and field.type() <= 23 );
+    return ( field.type() >= 20 && field.type() <= 23 );
 }
 
 bool PSQLDatabase::IsFloat( pqxx::field& field )
 {
-    return ( field.type() == 700 or field.type() == 701 );
+    return ( field.type() == 700 || field.type() == 701 );
 }
 
 bool PSQLDatabase::IsBinary( pqxx::field& field )
