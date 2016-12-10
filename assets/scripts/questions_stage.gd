@@ -1,5 +1,7 @@
 extends "res://assets/scripts/stage.gd"
 
+onready var crosshair = get_tree().get_root().get_node( "main/crosshair" )
+
 const MAX_PAGES_NUMBER = 5
 
 var answered = false
@@ -21,7 +23,13 @@ func start():
 	.start()
 	pages_panel.start( MAX_PAGES_NUMBER, true )
 
+func activate():
+	if pages_panel.complete: crosshair.set_modulate( Color( 0, 0, 1, 1 ) )
+	else: crosshair.set_modulate( Color( 0, 1, 0, 1 ) )
+	.activate()
+
 func deactivate():
+	crosshair.set_modulate( Color( 1, 1, 1, 1 ) )
 	.deactivate()
 	if pages_panel.complete and not answered: 
 		Globals.set( "score_" + get_name(), pages_panel.score )

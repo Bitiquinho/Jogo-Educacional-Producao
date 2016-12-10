@@ -14,6 +14,7 @@ func _ready():
 	set_fixed_process( true )
 
 func _input( event ):
+	selecting_stage = false
 	if event.type == InputEvent.MOUSE_MOTION:
 		var body = get_node( "body" )
 		var camera = get_node( "body/camera" )
@@ -34,7 +35,6 @@ func _fixed_process( delta ):
 	if selector.is_colliding():
 		current_stage = selector.get_collider().get_parent().get_parent()
 		current_stage.activate()
-		#print( "colliding with " + current_stage.get_name() )
 		if selecting_stage:
 			print( "selecting " + current_stage.get_name() )
 			current_stage.select()

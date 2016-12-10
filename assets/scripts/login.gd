@@ -5,8 +5,10 @@ onready var login_entry = get_node( "login_entry" )
 
 func _ready():
 	Globals.set( "score", 0 )
-	if not Globals.has( "server_host" ): Globals.set( "server_host", "127.0.0.1" )
+	if not Globals.has( "server_host" ): Globals.set( "server_host", "localhost" )
 	if not Globals.has( "player_name" ): Globals.set( "player_name", "" )
+	Globals.set_persisting( "server_host", true )
+	Globals.set_persisting( "player_name", true )
 	server_entry.set_text( Globals.get( "server_host" ) )
 	login_entry.set_text( Globals.get( "player_name" ) )
 	Input.set_mouse_mode( Input.MOUSE_MODE_VISIBLE )

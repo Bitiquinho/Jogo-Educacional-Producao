@@ -1,5 +1,7 @@
 extends "res://assets/scripts/stage.gd"
 
+onready var crosshair = get_tree().get_root().get_node( "main/crosshair" )
+
 func _ready():
 	content_button.set_text( "Conteúdo" )
 	#._ready()
@@ -7,6 +9,14 @@ func _ready():
 func start():
 	.start()
 	pages_panel.start( -1, false )
+
+func activate():
+	crosshair.set_modulate( Color( 1, 1, 0, 1 ) )
+	.activate()
+
+func deactivate():
+	crosshair.set_modulate( Color( 1, 1, 1, 1 ) )
+	.deactivate()
 
 func select():
 	if active:
