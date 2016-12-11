@@ -6,8 +6,9 @@ const MAX_PAGES_NUMBER = 5
 
 var answered = false
 
-func _ready():
-	pass
+func load_data():
+	.load_data()
+	Globals.set( "score_" + get_name(), 0 )
 
 func select():
 	if active:

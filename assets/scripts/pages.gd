@@ -46,10 +46,8 @@ func finish():
 	hide_panel()
 
 func load_data( data_id ):
-	var server_host = "127.0.0.1"
-	if Globals.has( "server_host" ): server_host = Globals.get( "server_host" )
 	var database = PSQLDatabase.new()
-	database.connect_server( server_host, "gamedb", "postgres", "postgres" )
+	database.connect_server( Globals.get( "server_host" ), "gamedb", "postgres", "postgres" )
 	loaded_pages_list = database.select( "public.pages", "id,text,options,image", \
 	                                     "WHERE type='" + data_id + "' ORDER BY id" )
 	print( loaded_pages_list )

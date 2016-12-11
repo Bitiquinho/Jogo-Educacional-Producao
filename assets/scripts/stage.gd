@@ -12,11 +12,8 @@ const STAGES_INFO = { "A":"Questões de Dispersão e Histograma",
 
 var active = false
 
-func _ready():
+func load_data():
 	pages_panel.load_data( get_name() )
-	for stage in STAGES_INFO:
-		Globals.set( "score_" + stage, 0 )
-	Globals.set( "complete_stages", 0 )
 
 func activate():
 	active = true

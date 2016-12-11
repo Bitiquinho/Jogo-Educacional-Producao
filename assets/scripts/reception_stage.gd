@@ -4,7 +4,6 @@ onready var crosshair = get_tree().get_root().get_node( "main/crosshair" )
 
 func _ready():
 	content_button.set_text( "Conteúdo" )
-	#._ready()
 
 func start():
 	.start()

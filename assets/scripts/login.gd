@@ -3,6 +3,8 @@ extends Panel
 onready var server_entry = get_node( "server_entry" )
 onready var login_entry = get_node( "login_entry" )
 
+onready var stages = get_tree().get_root().get_node( "main/game/stages" ).get_children()
+
 func _ready():
 	Globals.set( "score", 0 )
 	if not Globals.has( "server_host" ): Globals.set( "server_host", "localhost" )
@@ -17,6 +19,7 @@ func _ready():
 func start_game():
 	Globals.save()
 	Globals.set( "completed_stages", 0 )
+	for stage in stages: stage.load_data()
 	print( "starting game" )
 	get_tree().set_pause( false )
 	Input.set_mouse_mode( Input.MOUSE_MODE_CAPTURED )
