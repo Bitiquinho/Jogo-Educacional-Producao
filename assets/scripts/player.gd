@@ -47,13 +47,13 @@ func _integrate_forces( state ):
 	var aim = get_node( "body" ).get_global_transform().basis
 	var direction = Vector3()
 	
-	if Input.is_key_pressed( KEY_W ):
+	if Input.is_action_pressed( "move_front" ):
 		direction -= aim[ 2 ]
-	if Input.is_key_pressed( KEY_S ):
+	if Input.is_action_pressed( "move_back" ):
 		direction += aim[ 2 ]
-	if Input.is_key_pressed( KEY_A ):
+	if Input.is_action_pressed( "move_left" ):
 		direction -= aim[ 0 ]
-	if Input.is_key_pressed( KEY_D ):
+	if Input.is_action_pressed( "move_right" ):
 		direction += aim[ 0 ]
 	direction = direction.normalized()
 	
