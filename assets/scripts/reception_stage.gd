@@ -39,7 +39,7 @@ func select():
 			pages_panel.start( 1, false, 0 )
 			next_button.set_text( "Encerrar" )
 		else:
-			pages_panel.start( -1, false, 0 )
+			pages_panel.start( pages_text.size(), false, 0 )
 		pages_panel.show_panel()
 
 func register_score():
