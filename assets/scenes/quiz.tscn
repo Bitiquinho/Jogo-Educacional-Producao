@@ -5,7 +5,7 @@
 
 [sub_resource type="DynamicFont" id=1]
 
-font/size = 24
+font/size = 22
 font/use_mipmaps = false
 font/use_filter = false
 font/font = ExtResource( 2 )
@@ -100,10 +100,8 @@ custom_fonts/font = SubResource( 2 )
 toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
-text = "Próxima"
+text = "Continuar"
 flat = false
-
-[connection signal="button_selected" from="option_buttons" to="." method="_on_buttons_button_selected"]
 
 [connection signal="pressed" from="next_button" to="." method="_on_next_button_pressed"]
 

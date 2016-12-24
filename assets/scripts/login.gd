@@ -3,10 +3,7 @@ extends Panel
 onready var server_entry = get_node( "server_entry" )
 onready var login_entry = get_node( "login_entry" )
 
-onready var stages = get_tree().get_root().get_node( "main/game/stages" ).get_children()
-
 func _ready():
-	Globals.set( "score", 0 )
 	if not Globals.has( "server_host" ): Globals.set( "server_host", "localhost" )
 	if not Globals.has( "player_name" ): Globals.set( "player_name", "" )
 	Globals.set_persisting( "server_host", true )
@@ -18,8 +15,7 @@ func _ready():
 
 func start_game():
 	Globals.save()
-	Globals.set( "completed_stages", 0 )
-	for stage in stages: stage.load_data()
+	for stage in Game.stages: stage.load_data()
 	print( "starting game" )
 	get_tree().set_pause( false )
 	Input.set_mouse_mode( Input.MOUSE_MODE_CAPTURED )
@@ -30,7 +26,6 @@ func _on_server_entry_text_entered( text ):
 
 func _on_login_entry_text_entered( text ):
 	Globals.set( "player_name", text )
-	print( "recording name " + text )
 
 func _on_start_button_pressed():
 	Globals.set( "player_name", login_entry.get_text() )

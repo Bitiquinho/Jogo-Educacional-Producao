@@ -2,7 +2,6 @@ extends RigidBody
 
 var view_sensitivity = 0.3
 
-var selecting_stage = false
 var current_stage = null
 
 const WALK_SPEED = 3;
@@ -14,7 +13,6 @@ func _ready():
 	set_fixed_process( true )
 
 func _input( event ):
-	selecting_stage = false
 	if event.type == InputEvent.MOUSE_MOTION:
 		var body = get_node( "body" )
 		var camera = get_node( "body/camera" )
@@ -27,18 +25,14 @@ func _input( event ):
 		
 		body.set_rotation( Vector3( 0, deg2rad( yaw ), 0 ) )
 		camera.set_rotation( Vector3( deg2rad( pitch ), 0, 0 ) )
-	elif event.type == InputEvent.MOUSE_BUTTON and event.pressed and event.button_index == 1:
-		selecting_stage = true
 
 func _fixed_process( delta ):
 	var selector = get_node( "body/camera/selector" )
 	if selector.is_colliding():
 		current_stage = selector.get_collider().get_parent().get_parent()
 		current_stage.activate()
-		if selecting_stage:
-			print( "selecting " + current_stage.get_name() )
+		if Input.is_action_pressed( "click" ):
 			current_stage.select()
-			selecting_stage = false
 	elif current_stage != null:
 		current_stage.deactivate()
 		current_stage = null
