@@ -16,7 +16,7 @@ func load_data():
 		pages_text[ 1 ] += "\n" + stage + ": " + Game.STAGES_INFO[ stage ][ 0 ] + " (peso: " + str(Game.STAGES_INFO[ stage ][ 1 ]) + ")" 
 	for text_string in pages_text:
 		pages_panel.pages_list.append( { "text": text_string, "options": "", "image": null } )
-	.load_data()
+#	.load_data()
 
 func activate():
 	Game.crosshair.set_modulate( Color( 1, 1, 0, 1 ) )
@@ -39,7 +39,7 @@ func select():
 			pages_panel.start( 1, false, 0 )
 			next_button.set_text( "Encerrar" )
 		else:
-			pages_panel.start( pages_text.size(), false, 0 )
+			pages_panel.start( -1, false, 0 )
 		pages_panel.show_panel()
 
 func register_score():
