@@ -5,7 +5,6 @@ onready var content_image = get_node( "content/image" )
 onready var option_buttons = get_node( "option_buttons" )
 
 onready var next_button = get_node( "next_button" )
-onready var prev_button = get_node( "prev_button" )
 
 var pages_list = []
 var loaded_pages_list = []
